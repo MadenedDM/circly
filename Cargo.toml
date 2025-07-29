@@ -1,0 +1,39 @@
+[workspace]
+members = ["laurel-client", "laurel-server"]
+resolver = "3"
+
+[workspace.package]
+authors = ["Fae"]
+description = "A rougelike based on a server client model implemented in rust."
+repository = "https://github.com/MadenedDM/laurel"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+absolute_paths = "warn"
+allow_attributes = "warn"
+arbitrary_source_item_ordering = "warn"
+arithmetic_side_effects = "warn"
+big_endian_bytes = "warn"
+cfg_not_test = "deny"
+suspicious = { level = "warn", priority = -1 }
+complexity = { level = "warn", priority = -1 }
+perf = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+
+[profile.release]
+strip = "debuginfo"
+lto = "fat"
+
+[profile.dev]
+lto = "thin"
+
+[profile.dev.package."*"]
+opt-level = 3
+
+

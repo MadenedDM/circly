@@ -1,0 +1,25 @@
+[package]
+name = "laurel-server"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[lints]
+workspace = true
+
+# [dependencies]
+# specs = { version = "0.20.0", features = ["derive", "serde"] }
+# tokio = { version = "1.47.0", features = ["full"] }
+# uuid = { version = "1.17.0", features = ["v4"] }
+
+# # Capn' Proto
+# capnp = "0.21"
+# capnp-rpc = "0.21.0"
+# capnp-futures = "0.21.0"
+
+[build-dependencies]
+capnpc = "0.21"
