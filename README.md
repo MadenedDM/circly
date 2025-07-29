@@ -1,3 +1,5 @@
+[![Rust](https://github.com/MadenedDM/laurel/actions/workflows/rust.yml/badge.svg)](https://github.com/MadenedDM/laurel/actions/workflows/rust.yml)
+
 This project is VERY WIP, don't expect it to run, work, be safe, or be user friendly. 
 
 Don't worry about the following that much.
