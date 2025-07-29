@@ -11,15 +11,10 @@ build = "build.rs"
 [lints]
 workspace = true
 
-# [dependencies]
-# specs = { version = "0.20.0", features = ["derive", "serde"] }
-# tokio = { version = "1.47.0", features = ["full"] }
-# uuid = { version = "1.17.0", features = ["v4"] }
-
-# # Capn' Proto
-# capnp = "0.21"
-# capnp-rpc = "0.21.0"
-# capnp-futures = "0.21.0"
+[dependencies]
+tokio.workspace = true
+uuid.workspace = true
+hecs.workspace = true
 
 [build-dependencies]
 capnpc = "0.21"

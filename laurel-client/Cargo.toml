@@ -6,10 +6,16 @@ authors.workspace = true
 description.workspace = true
 repository.workspace = true
 license.workspace = true
+build = "build.rs"
 
 [lints]
 workspace = true
 
-# [dependencies]
-# tokio = { version = "1.47.0", features = ["full"] }
-# uuid = { version = "1.17.0" }
+[dependencies]
+tokio.workspace = true
+uuid.workspace = true
+hecs.workspace = true
+rltk = "0.8.7"
+
+[build-dependencies]
+capnpc = "0.21"
