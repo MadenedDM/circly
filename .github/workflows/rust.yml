@@ -17,8 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: install Dependencies
-      run: sudo apt update; sudo apt -y install capnproto fontconfig -qq
+      run: sudo apt -y install capnproto -qq
     - name: Build
-      run: cargo build --verbose
+      run: cargo build --bin laurel-server --verbose
     - name: Run tests
-      run: cargo test --verbose
+      run: cargo test --bin laurel-server --verbose

@@ -15,7 +15,7 @@ workspace = true
 tokio.workspace = true
 uuid.workspace = true
 hecs.workspace = true
-rltk = "0.8.7"
+bracket-terminal = "0.8.7"
 
 [build-dependencies]
 capnpc = "0.21"

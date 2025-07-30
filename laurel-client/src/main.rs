@@ -1,6 +1,6 @@
-use std::{ error::Error, io::{stdin, Read}, net::{ Ipv4Addr, SocketAddrV4 } };
+use std::{ error::Error, io::{ stdin, Read }, net::{ Ipv4Addr, SocketAddrV4 } };
 
-use tokio::{io::{ AsyncReadExt, AsyncWriteExt}, net::TcpStream};
+use tokio::{ io::{ AsyncReadExt, AsyncWriteExt }, net::TcpStream };
 
 const PORT: u16 = 9878;
 
@@ -17,7 +17,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     _ = sin.read(&mut bufw);
 
     stream.write(&bufw).await?;
-    
+
     let mut buf = [0u8; 4];
     stream.read(&mut buf).await?;
 
