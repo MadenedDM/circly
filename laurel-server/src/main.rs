@@ -2,7 +2,7 @@ use std::{ error::Error, net::{ Ipv4Addr, SocketAddrV4 } };
 
 use tokio::{ io::{ AsyncReadExt, AsyncWriteExt }, net::{ TcpListener, TcpStream }, spawn };
 
-// type Data = Mutex<Arc<()>>; // std::sync::Mutex
+// type Data = Arc<Mutex<World>>; // std::sync::Mutex
 
 const PORT: u16 = 9878;
 
@@ -10,7 +10,6 @@ const PORT: u16 = 9878;
 async fn main() -> Result<(), Box<dyn Error>> {
     let address: SocketAddrV4 = SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT);
     let listener: TcpListener = TcpListener::bind(address).await?;
-
     println!("Server bound to: {address}");
 
     loop {
@@ -28,8 +27,9 @@ async fn process(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
 
     stream.read(&mut buf).await?;
     println!("{:?}", String::from_utf8_lossy(&buf));
+    
     buf.reverse();
     stream.write(&buf).await?;
-    
+
     Ok(())
 }

@@ -1,0 +1,1 @@
+Very basic mockup in python for the sake of writing it fast, not good. Once the server is more usable then a rewrite of it in Rust should be done.
