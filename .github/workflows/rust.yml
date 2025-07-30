@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: install Capn proto
-      run: sudo apt-get install capnproto -qq; sudo apt-get -y install fontconfig
+      run: sudo apt-get install capnproto fontconfig -qq
     - name: Build
       run: cargo build --verbose
     - name: Run tests
