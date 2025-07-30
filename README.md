@@ -12,6 +12,6 @@ Default assets can be obtained by calling `get_assets.sh`, this file probably wo
 
 # Dream Features
 I want to / plan to add these features but my own laziness and stupidity stands in the way:
-- Multithreading
-- The actual game
+- Match the contents of [Yet Another Roguelike Tutorial - Written in Python 3 and TCOD](https://rogueliketutorials.com/tutorials/tcod/v2/) except in the crazy design of this
 - This list
+- The actual game
