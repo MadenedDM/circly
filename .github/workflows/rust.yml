@@ -31,3 +31,15 @@ jobs:
       run: cargo build --bin laurel-server --verbose
     - name: Run Tests
       run: cargo test --bin laurel-server --verbose
+
+
+  build-mac:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: cargo build --bin laurel-server --verbose
+    - name: Run Tests
+      run: cargo test --bin laurel-server --verbose
