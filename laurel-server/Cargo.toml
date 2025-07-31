@@ -14,3 +14,4 @@ workspace = true
 tokio.workspace = true
 uuid.workspace = true
 hecs.workspace = true
+lore-proto = { path = "../lore-proto", version = "*" }
