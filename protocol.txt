@@ -12,6 +12,16 @@ Codes [1]:
 |  04  | CLSE |  N  | Server to Client, server is closing and disconnecting all clients
 |  05  | KICK |  N  | Server to Client, server is removing client
 |  06  | DROP |  N  | Server to Client, server is removing client, client is encouraged to attempt to reconnect, possibly due to some bug or error occuring
+|  07  | GETE |  Y  | Client to Server, get all components on an entity
+|  08  | RESE |  Y  | Server to Client, 
+|  09  | GETP |  N  | Client to Server, get all components on the player associated with the player. 
+|  0A  | RESP |  Y  | Server to Client,
+|  0B  | GETC |  Y  | Client to Server, get all entities with a component
+|  0C  | RESC |  Y  | Server to Client, 
+|  0D  | GREG |  N  | Client to Server, Get all component types availble for query
+|  0E  | SREG |  Y  | Server to Client, Response to GREG
+|  0F  | REND |  Y  | Client to Server, request for all render data
+|  10  | SHOW |  Y  | Server to Client, send render data to the client
 
 ID format [2-8]:
 8 definition bits, 6 Id bytes
