@@ -43,8 +43,3 @@ serde = { version = "1.0.219", features = ["derive"] }
 
 tokio = { version = "1.47.0", features = ["full"] }
 uuid = { version = "1.17.0", features = ["v4", "serde"] }
-
-# Capn' Proto
-capnp = "0.21"
-capnp-rpc = "0.21.0"
-capnp-futures = "0.21.0"

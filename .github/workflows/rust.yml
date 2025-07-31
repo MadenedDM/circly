@@ -10,15 +10,24 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-linux:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: install Dependencies
-      run: sudo apt -y install capnproto -qq
     - name: Build
       run: cargo build --bin laurel-server --verbose
-    - name: Run tests
+    - name: Run Tests
+      run: cargo test --bin laurel-server --verbose
+
+  build-win:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: cargo build --bin laurel-server --verbose
+    - name: Run Tests
       run: cargo test --bin laurel-server --verbose

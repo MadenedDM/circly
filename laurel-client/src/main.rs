@@ -12,12 +12,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let mut sin = stdin();
 
-    let mut bufw = [0u8; 4];
+    let mut bufw = [0u8; 8];
     _ = sin.read(&mut bufw);
 
     stream.write(&bufw).await?;
 
-    let mut buf = [0u8; 4];
+    let mut buf = [0u8; 8];
     stream.read(&mut buf).await?;
 
     println!("{:?}", String::from_utf8_lossy(&buf));

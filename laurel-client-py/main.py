@@ -1,18 +1,22 @@
 # import tcod
+import random
 import socket
 
 HOST = "127.0.0.1"
 PORT = 9878
 
+id = random.randbytes(8)
+
 def main() -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
-        s.sendall(b"Aaaa")
-        data = s.recv(1024);
+        a = "CONNECT".encode("utf-8") + id
+        s.sendall(a)
+        data2 = s.recv(16)
     
-    print(f"{data!r}")
-        
+    print(f"{data2!r}")
 
+        
     # tilesheet = tcod.tileset.load_tilesheet(
     #     "../assets/game/Yayo.png", 16, 16, tcod.tileset.CHARMAP_CP437
     # )

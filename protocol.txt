@@ -1,0 +1,20 @@
+Message Breakdown:
+Code: 1 byte
+Sender ID: 7 bytes
+Data: Some amount of bytes
+
+Codes [1]:
+| Code | Name | Dat | Description
+|  00  | CONC |  Y  | Client to Server, request to join server, id may or may not be blank in this message, also sends a bit of player data for creating the player entity
+|  01  | JOIN |  Y  | Server to Client, acceptance to join server, sends the serverside ID of the player
+|  02  | DENY |  N  | Server to Client, denial to join server
+|  03  | QUIT |  N  | Client to Server, request to quit server, expects no response
+|  04  | CLSE |  N  | Server to Client, server is closing and disconnecting all clients
+|  05  | KICK |  N  | Server to Client, server is removing client
+|  06  | DROP |  N  | Server to Client, server is removing client, client is encouraged to attempt to reconnect, possibly due to some bug or error occuring
+
+ID format [2-8]:
+8 definition bits, 6 Id bytes
+Bit 1: Server or Client
+Bit 2-8: Unused for now
+Remaining bytes are used as an id
