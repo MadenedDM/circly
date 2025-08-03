@@ -1,24 +1,23 @@
-use std::{ error::Error, io::{ stdin, Read }, net::{ Ipv4Addr, SocketAddrV4 } };
-
-use tokio::{ io::{ AsyncReadExt, AsyncWriteExt }, net::TcpStream };
+use std::{ error::Error, io::{ stdin, Read, Write }, net::{ Ipv4Addr, SocketAddrV4, TcpStream } };
 
 const PORT: u16 = 9878;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let address: SocketAddrV4 = SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT);
-    let mut stream = TcpStream::connect(address).await?;
+    let mut stream = TcpStream::connect(address)?;
     println!("Listening on: {address}");
+
+    stream.write_all(b"Hai~")?;
 
     let mut sin = stdin();
 
     let mut bufw = [0u8; 8];
-    _ = sin.read(&mut bufw);
+    _ = sin.read(&mut bufw).unwrap();
 
-    stream.write(&bufw).await?;
+    stream.write(&bufw)?;
 
     let mut buf = [0u8; 8];
-    stream.read(&mut buf).await?;
+    stream.read(&mut buf)?;
 
     println!("{:?}", String::from_utf8_lossy(&buf));
 

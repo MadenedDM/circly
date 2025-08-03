@@ -39,6 +39,11 @@ impl MessageHeader {
     }
 }
 
+pub fn create_message_header(code: MessageType, id: [u8; 6], tag: u8) -> [u8; 8] {
+    let dat: MessageHeader = MessageHeader { code: code, id_tag: tag, id: id };
+    MessageHeader::to_bytes(dat)
+}
+
 pub fn create_id_tag(server: bool) -> u8 {
     let mut buf: u8 = 0u8;
 
