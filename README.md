@@ -12,7 +12,7 @@ Default assets can be obtained by calling `get_assets.sh`, this file probably wo
 
 # Design Choices/Goals
 
-1. Compatability with at least Linux and Windows.
+1. Compatability with at least Linux and Windows, Mac would be nice but is not at this point going to be maintained directly.
 2. Decoupling of Server and Client, the Server should rarely require features provided in the client, and these should only be done at runtime. This goal may be dropped at a later date if it becomes to tedious to uphold.
 
 # Dream Features
