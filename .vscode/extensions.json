@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "norgor.capnp",
         "vadimcn.vscode-lldb",
         "rust-lang.rust-analyzer"
     ]
