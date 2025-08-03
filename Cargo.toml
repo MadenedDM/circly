@@ -37,9 +37,9 @@ lto = "thin"
 opt-level = 3
 
 [workspace.dependencies]
-hecs = { version = "0.10.5", features = ["serde", "macros"] }
+hecs = { version = "0.10.5", features = ["macros"] }
 
-serde = { version = "1.0.219", features = ["derive"] }
+# serde = { version = "1.0.219", features = ["derive"] }
 
 uuid = { version = "1.17.0", features = ["v4"] }
 
