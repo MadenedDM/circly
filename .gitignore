@@ -1,5 +1,4 @@
 *.lock
-.venv
 target
 
 # assets in main folder
