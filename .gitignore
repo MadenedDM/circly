@@ -1,4 +1,9 @@
 *.lock
+.venv
 target
+
+# assets in main folder
 assets
+
+# assets in subpaths 
 !*/assets
