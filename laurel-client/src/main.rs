@@ -3,7 +3,6 @@ use std::{
     error::Error,
     io::{self, ErrorKind, Write},
     net::{Ipv4Addr, Shutdown, SocketAddr, SocketAddrV4, TcpStream},
-
 };
 
 const PORT: u16 = 9878;
@@ -14,13 +13,13 @@ pub struct Client {
 }
 
 impl Client {
-    /// Constructs a new client
+    /// Constructs a new client or dies trying
     ///
     /// # Panics
-    /// If the connection is unable to be made, for example if the server is not up.
+    /// Whenever `try_new` would error
     #[must_use]
     pub fn new(addr: SocketAddr) -> Self {
-        let stream = match TcpStream::connect(addr) {
+        match Self::try_new(addr) {
             Ok(dat) => dat,
             Err(e) => match e.kind() {
                 ErrorKind::ConnectionRefused => {
@@ -30,9 +29,22 @@ impl Client {
                     panic!("Connection Failed: {e:?}")
                 }
             },
+        }
+    }
+
+    /// Tries to construct a new client
+    ///
+    /// # Errors
+    /// If the server cannot be connected to.
+    pub fn try_new(addr: SocketAddr) -> Result<Self, io::Error> {
+        let stream = match TcpStream::connect(addr) {
+            Ok(dat) => dat,
+            Err(e) => {
+                return Err(e);
+            }
         };
 
-        Self { addr, stream }
+        Ok(Self { addr, stream })
     }
 
     /// # Errors
@@ -47,7 +59,19 @@ impl Client {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let address: SocketAddr = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT));
-    let mut client: Client = Client::new(address);
+
+    let mut client: Client = match Client::try_new(address) {
+        Ok(c) => c,
+        Err(e) => match e.kind() {
+            ErrorKind::ConnectionRefused => {
+                println!("Connection Refused, Is the Server up?");
+                return Ok(());
+            }
+            _ => {
+                panic!("Connection Failed: {e:?}")
+            }
+        },
+    };
 
     client.run()?;
 
