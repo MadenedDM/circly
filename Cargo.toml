@@ -1,5 +1,5 @@
 [workspace]
-members = ["laurel-client", "laurel-server", "lore-proto"]
+members = ["laurel-client", "laurel-server"]
 resolver = "3"
 
 [workspace.package]
@@ -9,6 +9,9 @@ repository = "https://github.com/MadenedDM/laurel"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
+keywords = ["Game"]
+categories = ["games"]
+readme = "README.md"
 
 [workspace.lints.rust]
 unsafe_code = "forbid" # Might change later
@@ -16,7 +19,7 @@ unsafe_code = "forbid" # Might change later
 [workspace.lints.clippy]
 absolute_paths = "warn"
 allow_attributes = "warn"
-arbitrary_source_item_ordering = "warn"
+# arbitrary_source_item_ordering = "warn"
 arithmetic_side_effects = "warn"
 big_endian_bytes = "warn"
 cfg_not_test = "deny"
@@ -28,7 +31,7 @@ cargo = { level = "warn", priority = -1 }
 
 [profile.release]
 strip = "debuginfo"
-lto = "fat"
+lto = "thin"
 
 [profile.dev]
 lto = "thin"
@@ -37,10 +40,23 @@ lto = "thin"
 opt-level = 3
 
 [workspace.dependencies]
-hecs = { version = "0.10.5", features = ["macros"] }
+# Provides an ECS toolset
+hecs = { version = "0.10", features = ["macros", "serde"] }
 
-# serde = { version = "1.0.219", features = ["derive"] }
+# Provides Serialization
+serde = { version = "1.0.219", features = ["derive"] }
 
-uuid = { version = "1.17.0", features = ["v4"] }
+# Provides error handling
+thiserror = { version = "2.0.12" }
 
-nom = "8.0.0"
+# Provides tools for parsing
+nom = { version = "8.0" }
+
+# Provides async
+tokio = { version = "1.47", features = ["full"] }
+
+# Provides io
+mio = { version = "1.0.4", features = ["net"] }
+
+
+# uuid = { version = "1.17", features = ["v4"] }

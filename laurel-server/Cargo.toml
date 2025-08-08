@@ -6,14 +6,20 @@ authors.workspace = true
 description.workspace = true
 repository.workspace = true
 license.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [lints]
 workspace = true
 
 [dependencies]
-uuid.workspace = true
+# uuid.workspace = true
 hecs.workspace = true
-# tokio.workspace = true
-rand_pcg = "0.9.0"
+tokio.workspace = true
+# mio.workspace = true
 # nom.workspace = true
-# lore-proto = { path = "../lore-proto", version = "*" }
+thiserror.workspace = true
+
+# Serverside RNG
+# rand_pcg = "0.9.0"

@@ -1,83 +1,116 @@
 use std::{
     collections::HashMap,
     error::Error,
-    io::{ BufReader, BufWriter, Read, Write },
-    net::{ Ipv4Addr, SocketAddr, SocketAddrV4, TcpListener, TcpStream },
-    sync::{ Arc, Mutex },
-    thread::{ spawn, JoinHandle },
+    io::ErrorKind,
+    net::{Ipv4Addr, SocketAddr, SocketAddrV4},
+    sync::{Arc, Mutex},
 };
 
-use hecs::{ World };
-use uuid::Uuid;
+use hecs::World;
+use tokio::{
+    net::{TcpListener, TcpStream},
+    spawn,
+};
 
 const PORT: u16 = 9878;
+
+type Errorable = Result<(), Box<dyn Error>>;
 
 // #[derive(Clone, Copy, Debug)]
 // struct PlayerComponent {
 //     owner: u32,
 // }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let address: SocketAddrV4 = SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT);
-    println!("Trying address, {address}");
+// struct Position {
+//     x: i32,
+//     y: i32,
+// }
 
-    let listener: TcpListener = TcpListener::bind(address).expect("Binding failed.");
-    println!("Server bound to: {address}");
+#[derive(Clone, Copy, Debug, PartialEq, Default)]
+pub struct Color {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+}
 
-    let world = Arc::new(Mutex::new(World::new()));
-    // let players = Arc::new(Mutex::new(HashMap::<Uuid, Entity>::new()));
-
-    let mut threads: Vec<JoinHandle<()>> = Vec::new();
-    let mut connections = HashMap::<SocketAddr, Uuid>::new();
-
-    {
-        let mut data = world.lock().unwrap();
-        data.spawn(());
-    }
-
-    loop {
-        let (stream, addr) = listener.accept().unwrap();
-        connections.insert(addr, Uuid::new_v4());
-
-        for i in &connections {
-            println!("{i:?}");
-        }
-
-        threads.push(
-            spawn(move || {
-                println!("New connection: {addr}");
-                process(stream, addr);
-            })
-        );
+impl Color {
+    #[must_use]
+    pub fn new(r: u8, g: u8, b: u8) -> Self {
+        Self { r, g, b }
     }
 }
 
-fn process(stream: TcpStream, addr: SocketAddr) {
-    let mut reader = BufReader::new(&stream);
-    let mut writer = BufWriter::new(&stream);
+pub struct Server {
+    pub listener: TcpListener,
 
-    loop {
-        let mut buf = [0u8; 16];
-        reader.read(&mut buf).unwrap();
+    pub clients: Arc<Mutex<HashMap<SocketAddr, TcpStream>>>,
+    pub world: Arc<Mutex<World>>,
+}
 
-        if buf != [0u8; 16] {
-            println!("{addr}: {:?}", buf);
+impl Server {
+    /// Creates a server instance. Will immedately bind to a socket.
+    ///
+    /// Normally produces output to stdout
+    ///
+    /// # Panics
+    /// If the given socket can't be bound.
+    #[must_use]
+    pub async fn init(addr: SocketAddr) -> Self {
+        println!("Starting server on: {addr}");
+        let mut world: World = World::new();
+        world.spawn(());
+
+        let listen: TcpListener = match TcpListener::bind(addr).await {
+            Ok(lser) => {
+                println!("Server bound to: {addr}");
+                lser
+            }
+            Err(e) => match e.kind() {
+                ErrorKind::AddrInUse => {
+                    panic!("The socket to be bound is in use.")
+                }
+                _ => {
+                    panic!("Server Binding Failed")
+                }
+            },
+        };
+
+        Self {
+            listener: listen,
+            world: Arc::new(Mutex::new(world)),
+            clients: Arc::new(Mutex::new(HashMap::new())),
         }
-
-        let _ = writer.write(b"Hello!:)");
-
-        //     match  {
-        //         Ok(byt) => {println!("{byt}")},
-        //         Err(e) =>
-        //             match e.kind() {
-        //                 ErrorKind::BrokenPipe => {
-        //                     break;
-        //                 }
-        //                 ErrorKind::ConnectionAborted => {
-        //                     break;
-        //                 }
-        //                 _ => (),
-        //             }
-        //     }
     }
+
+    /// Run the server
+    ///
+    /// # Errors
+    /// Sometimes
+    ///
+    /// # Panics
+    /// Sometimes
+    pub async fn run(&mut self) -> Errorable {
+        loop {
+            match self.listener.accept().await {
+                Ok((socket, address)) => {
+                    println!("New connection {address:?}");
+                    spawn(async move {
+                        println!("{:?}", socket.readable().await.unwrap());
+                    });
+                }
+                Err(e) => println!("Failed connection: {e:?}"),
+            }
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() -> Errorable {
+    let address: SocketAddr = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT));
+
+    let mut server: Server = Server::init(address).await;
+
+    server.run().await?;
+
+    Ok(())
 }

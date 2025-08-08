@@ -6,11 +6,14 @@ authors.workspace = true
 description.workspace = true
 repository.workspace = true
 license.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [lints]
 workspace = true
 
 [dependencies]
-uuid.workspace = true
+# uuid.workspace = true
 hecs.workspace = true
 bracket-terminal = "0.8.7"
