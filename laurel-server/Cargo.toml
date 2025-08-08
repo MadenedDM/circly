@@ -14,7 +14,7 @@ categories.workspace = true
 workspace = true
 
 [dependencies]
-# uuid.workspace = true
+uuid.workspace = true
 hecs.workspace = true
 tokio.workspace = true
 # nom.workspace = true

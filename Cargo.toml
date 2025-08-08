@@ -43,16 +43,16 @@ opt-level = 3
 # Provides an ECS toolset
 hecs = { version = "0.10", features = ["macros", "serde"] }
 
-# Provides Serialization
-serde = { version = "1.0.219", features = ["derive"] }
+# Provides Serialization features
+serde = { version = "1.0", features = ["derive"] }
 
 # Provides error handling
-thiserror = { version = "2.0.12" }
+thiserror = { version = "2.0" }
 
 # Provides tools for parsing
-# nom = { version = "8.0" }
+nom = { version = "8.0" }
 
 # Provides async
 tokio = { version = "1.47", features = ["full"] }
 
-# uuid = { version = "1.17", features = ["v4"] }
+uuid = { version = "1.17", features = ["v4"] }

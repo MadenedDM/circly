@@ -17,5 +17,5 @@ pub mod color {
 }
 
 pub mod lore {
-    
+
 }

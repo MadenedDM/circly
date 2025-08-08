@@ -50,7 +50,7 @@ impl Client {
     /// # Errors
     /// Sometimes
     pub fn run(&mut self) -> Result<(), io::Error> {
-        let a = self.stream.write_all(b"Hello!");
+        let a = self.stream.write_all(&[0; 17]);
 
         let _ = self.stream.shutdown(Shutdown::Both);
         a
