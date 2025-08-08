@@ -17,7 +17,6 @@ workspace = true
 # uuid.workspace = true
 hecs.workspace = true
 tokio.workspace = true
-# mio.workspace = true
 # nom.workspace = true
 thiserror.workspace = true
 
