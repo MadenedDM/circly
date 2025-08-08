@@ -1,8 +1,9 @@
 #![allow(clippy::multiple_crate_versions)]
 use std::{
     error::Error,
-    io::ErrorKind,
-    net::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpStream},
+    io::{self, ErrorKind, Write},
+    net::{Ipv4Addr, Shutdown, SocketAddr, SocketAddrV4, TcpStream},
+
 };
 
 const PORT: u16 = 9878;
@@ -36,8 +37,11 @@ impl Client {
 
     /// # Errors
     /// Sometimes
-    pub fn run(&mut self) -> Result<(), Box<dyn Error>> {
-        todo!()
+    pub fn run(&mut self) -> Result<(), io::Error> {
+        let a = self.stream.write_all(b"Hello!");
+
+        let _ = self.stream.shutdown(Shutdown::Both);
+        a
     }
 }
 

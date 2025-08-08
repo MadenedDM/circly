@@ -8,6 +8,7 @@ use std::{
 
 use hecs::World;
 use tokio::{
+    io::{AsyncReadExt, BufReader},
     net::{TcpListener, TcpStream},
     spawn,
 };
@@ -26,23 +27,9 @@ type Errorable = Result<(), Box<dyn Error>>;
 //     y: i32,
 // }
 
-#[derive(Clone, Copy, Debug, PartialEq, Default)]
-pub struct Color {
-    pub r: u8,
-    pub g: u8,
-    pub b: u8,
-}
-
-impl Color {
-    #[must_use]
-    pub fn new(r: u8, g: u8, b: u8) -> Self {
-        Self { r, g, b }
-    }
-}
-
+/// A server implementation
 pub struct Server {
     pub listener: TcpListener,
-
     pub clients: Arc<Mutex<HashMap<SocketAddr, TcpStream>>>,
     pub world: Arc<Mutex<World>>,
 }
@@ -56,13 +43,13 @@ impl Server {
     /// If the given socket can't be bound.
     #[must_use]
     pub async fn init(addr: SocketAddr) -> Self {
-        println!("Starting server on: {addr}");
+        println!("Starting server .. {addr}");
         let mut world: World = World::new();
         world.spawn(());
 
         let listen: TcpListener = match TcpListener::bind(addr).await {
             Ok(lser) => {
-                println!("Server bound to: {addr}");
+                println!("Server bound ..... {addr}");
                 lser
             }
             Err(e) => match e.kind() {
@@ -93,9 +80,34 @@ impl Server {
         loop {
             match self.listener.accept().await {
                 Ok((socket, address)) => {
-                    println!("New connection {address:?}");
+                    println!("New connection ... {address}");
                     spawn(async move {
-                        println!("{:?}", socket.readable().await.unwrap());
+                        let mut reader = BufReader::new(socket);
+                        'connection: loop {
+                            let mut buf = vec![0u8; 8];
+                            match reader.read_buf(&mut buf).await {
+                                Ok(qty) => {
+                                    if qty == 0 {
+                                        println!("Disconnected ..... {address}");
+                                        break 'connection;
+                                    }
+                                    if buf != vec![0u8; 8] {
+                                        let j = String::from_utf8_lossy(&buf);
+
+                                        println!("{j:?} ... {address}");
+                                    }
+                                }
+                                Err(e) => match e.kind() {
+                                    ErrorKind::UnexpectedEof => {
+                                        println!("Disconnected ..... {address}");
+                                        break 'connection;
+                                    }
+                                    _ => {
+                                        println!("Error {e:?} while reading");
+                                    }
+                                },
+                            }
+                        }
                     });
                 }
                 Err(e) => println!("Failed connection: {e:?}"),

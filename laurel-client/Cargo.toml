@@ -15,5 +15,9 @@ workspace = true
 
 [dependencies]
 # uuid.workspace = true
-hecs.workspace = true
+# hecs.workspace = true
 bracket-terminal = "0.8.7"
+
+[dependencies.laurel-common]
+version = "*"
+path = "../laurel-common"

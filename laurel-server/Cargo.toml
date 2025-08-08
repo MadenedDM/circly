@@ -18,7 +18,11 @@ workspace = true
 hecs.workspace = true
 tokio.workspace = true
 # nom.workspace = true
-thiserror.workspace = true
+# thiserror.workspace = true
 
 # Serverside RNG
 # rand_pcg = "0.9.0"
+
+[dependencies.laurel-common]
+version = "*"
+path = "../laurel-common"
