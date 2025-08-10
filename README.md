@@ -4,7 +4,7 @@
 ![Static Badge](https://img.shields.io/badge/License-MIT-fc0a9b)
 <!-- [![Coverage Status](https://coveralls.io/repos/github/MadenedDM/laurel/badge.svg?branch=master)](https://coveralls.io/github/MadenedDM/laurel?branch=master) -->
 
-This project is VERY WIP, don't expect it to run, work, be safe, or be user friendly. 
+This project is VERY WIP, don't expect it to run, work, be safe, or be user friendly (Like me!). 
 
 Don't worry about the following that much.
 
@@ -12,8 +12,8 @@ Default assets can be obtained by calling `get_assets.sh`, this file probably wo
 
 # Design Choices/Goals
 
-1. Compatability with at least Linux and Windows, Mac would be nice but is not at this point going to be maintained directly.
-2. Decoupling of Server and Client, the Server should rarely require features provided in the client, and these should only be done at runtime. This goal may be dropped at a later date if it becomes to tedious to uphold.
+1. Planned compatability with Linux and Windows and potential compatability with Mac.
+2. Decoupling of Server and Client, or the potential for DIY clients.
 
 # Dream Features
 I want to / plan to add these features but my own laziness and stupidity stands in the way:

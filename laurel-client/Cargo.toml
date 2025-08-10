@@ -19,5 +19,5 @@ workspace = true
 bracket-terminal = "0.8.7"
 
 [dependencies.laurel-common]
-version = "*"
+version = "1.0.0-ALEPH"
 path = "../laurel-common"

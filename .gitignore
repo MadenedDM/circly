@@ -8,3 +8,5 @@ assets
 !*/assets
 
 scrap-bin
+
+*.log

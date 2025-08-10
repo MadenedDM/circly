@@ -3,7 +3,8 @@ name = "laurel-common"
 authors.workspace = true
 description.workspace = true
 repository.workspace = true
-version.workspace = true
+# My most sincere apologies for the versioning scheme for this
+version = "1.0.0-ALEPH" 
 edition.workspace = true
 license.workspace = true
 keywords.workspace = true
@@ -14,4 +15,9 @@ readme.workspace = true
 workspace = true
 
 [dependencies]
-serde = { workspace = true }
+rkyv = { workspace = true }
+tokio = { workspace = true, optional = true }
+
+[features]
+default = []
+tokio = ["dep:tokio"]

@@ -8,12 +8,14 @@ use std::{
 };
 
 use hecs::World;
+use laurel_common::lore::{CLIENT, SERVER, new_shake_buf};
+use log::{LevelFilter, error, info, warn};
+use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
     spawn,
 };
-use uuid::Uuid;
 
 const PORT: u16 = 9878;
 
@@ -34,8 +36,6 @@ pub struct Server {
     pub listener: TcpListener,
     pub clients: Arc<Mutex<HashMap<SocketAddr, TcpStream>>>,
     pub world: Arc<Mutex<World>>,
-    pub local: Arc<Mutex<HashMap<SocketAddr, Uuid>>>,
-    pub lacol: Arc<Mutex<HashMap<Uuid, SocketAddr>>>,
 }
 
 impl Server {
@@ -47,13 +47,13 @@ impl Server {
     /// If the given socket can't be bound.
     #[must_use]
     pub async fn init(addr: SocketAddr) -> Self {
-        println!("Starting server .. {addr}");
+        info!("Starting server .. {addr}");
         let mut world: World = World::new();
         world.spawn(());
 
         let listen: TcpListener = match TcpListener::bind(addr).await {
             Ok(lser) => {
-                println!("Server bound ..... {addr}");
+                info!("Server bound ..... {addr}");
                 lser
             }
             Err(e) => match e.kind() {
@@ -70,8 +70,6 @@ impl Server {
             listener: listen,
             world: Arc::new(Mutex::new(world)),
             clients: Arc::new(Mutex::new(HashMap::new())),
-            local: Arc::new(Mutex::new(HashMap::new())),
-            lacol: Arc::new(Mutex::new(HashMap::new())),
         }
     }
 
@@ -86,23 +84,30 @@ impl Server {
         loop {
             match self.listener.accept().await {
                 Ok((mut socket, address)) => {
-                    println!("New connection ... {address}");
-                    let mut handshake = [0u8; 17];
-                    match socket.read_exact(&mut handshake).await {
+                    info!("New connection ... {address}");
+                    let mut handshake = new_shake_buf();
+                    let reading = socket.read_exact(&mut handshake);
+                    match reading.await {
                         Ok(_amount) => {
-                            let assign: Uuid = Uuid::new_v4();
-                            {
-                                let mut lc = self.local.lock().unwrap();
-                                let mut cl = self.lacol.lock().unwrap();
-
-                                lc.insert(address, assign);
-                                cl.insert(assign, address);
+                            if handshake == CLIENT {
+                                info!("Accepted ......... {address}");
+                                match socket.write_all(&SERVER).await {
+                                    Ok(()) => (),
+                                    Err(e) => {
+                                        error!(
+                                            "{e:?} Occured while confirming with client"
+                                        );
+                                        shutdown(&mut socket).await;
+                                    }
+                                }
+                            } else {
+                                info!("Refused .......... {address}");
+                                shutdown(&mut socket).await;
                             }
-                            println!("Connected ........ {address} -> {assign}");
                         }
                         Err(e) => match e.kind() {
                             ErrorKind::UnexpectedEof => {
-                                println!("Failed Handshake . {address}");
+                                info!("Failed Handshake . {address}");
                                 shutdown(&mut socket).await;
                             }
                             _ => {
@@ -139,7 +144,7 @@ impl Server {
                         // }
                     });
                 }
-                Err(e) => println!("Failed connection: {e:?}"),
+                Err(e) => warn!("Failed connection: {e:?}"),
             }
         }
     }
@@ -150,16 +155,25 @@ impl Server {
 /// # Panics
 /// If something goes wrong in the call to `TcpStream::shutdown`
 pub async fn shutdown(socket: &mut TcpStream) {
+    info!("Socket Closing");
     match socket.shutdown().await {
         Ok(()) => (),
         Err(e) => {
-            panic!("Error {e:?}");
+            assert!((e.kind() == ErrorKind::NotConnected), "Error {e:?}"); // In case user is on MacOS, this might change in the future
         }
     }
 }
 
 #[tokio::main]
 async fn main() -> Errorable {
+    CombinedLogger::init(vec![TermLogger::new(
+        LevelFilter::Debug,
+        Config::default(),
+        TerminalMode::Mixed,
+        ColorChoice::Auto,
+    )])
+    .unwrap();
+
     let address: SocketAddr = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT));
 
     let mut server: Server = Server::init(address).await;

@@ -1,9 +1,11 @@
 #![allow(clippy::multiple_crate_versions)]
 use std::{
     error::Error,
-    io::{self, ErrorKind, Write},
+    io::{self, ErrorKind, Read, Write},
     net::{Ipv4Addr, Shutdown, SocketAddr, SocketAddrV4, TcpStream},
 };
+
+use laurel_common::lore::{new_shake_buf, ShakeBuf, CLIENT, SERVER};
 
 const PORT: u16 = 9878;
 
@@ -47,13 +49,34 @@ impl Client {
         Ok(Self { addr, stream })
     }
 
+    /// Runs the client
+    ///
     /// # Errors
     /// Sometimes
     pub fn run(&mut self) -> Result<(), io::Error> {
-        let a = self.stream.write_all(&[0; 17]);
+        match self.stream.write_all(&CLIENT) {
+            Ok(()) => (),
+            Err(e) => {
+                return Err(e);
+            }
+        }
+
+        let mut buf: ShakeBuf = new_shake_buf();
+
+        match self.stream.read_exact(&mut buf) {
+            Ok(()) => (),
+            Err(e) => {
+                return Err(e);
+            }
+        }
+
+        if buf == SERVER {
+            println!("Connected to a Server");
+        }
 
         let _ = self.stream.shutdown(Shutdown::Both);
-        a
+
+        Ok(())
     }
 }
 
