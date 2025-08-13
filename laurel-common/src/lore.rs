@@ -21,12 +21,14 @@ pub const fn new_shake_buf() -> ShakeBuf {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Archive)]
 #[rkyv(compare(PartialEq), derive(Debug))]
+#[non_exhaustive]
 pub enum Request {
     Echo(String),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Archive)]
 #[rkyv(compare(PartialEq), derive(Debug))]
+#[non_exhaustive]
 pub enum Response {
     Fail,
     Refuse,

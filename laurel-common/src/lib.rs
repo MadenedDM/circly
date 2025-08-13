@@ -2,7 +2,6 @@
 
 pub mod lore;
 
-/// Checks version of the crate for comparison in case of breaking changes between server and client.
 #[must_use]
 pub fn version() -> u32 {
     env!("CARGO_PKG_VERSION_MAJOR")
@@ -30,8 +29,36 @@ pub mod color {
 }
 
 pub mod point {
+    use std::ops::{Add, Sub};
+
+    use rkyv::{Archive, Deserialize, Serialize};
+
+    #[derive(Clone, Archive, Copy, Debug, PartialEq, Default, Serialize, Deserialize)]
+    #[rkyv(compare(PartialEq), derive(Debug))]
     pub struct Point {
         pub x: i32,
         pub y: i32,
+    }
+
+    impl Add for Point {
+        type Output = Point;
+
+        fn add(self, rhs: Self) -> Self::Output {
+            Self::Output {
+                x: self.x.saturating_add(rhs.x),
+                y: self.y.saturating_add(rhs.y),
+            }
+        }
+    }
+
+    impl Sub for Point {
+        type Output = Point;
+
+        fn sub(self, rhs: Self) -> Self::Output {
+            Self::Output {
+                x: self.x.saturating_sub(rhs.x),
+                y: self.y.saturating_sub(rhs.y),
+            }
+        }
     }
 }
