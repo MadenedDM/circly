@@ -26,6 +26,6 @@ simplelog.workspace = true
 # rand_pcg = "0.9.0"
 
 [dependencies.laurel-common]
-version = "1.0.0-ALEPH"
+version = "0.1.0"
 path = "../laurel-common"
 features = ["tokio"]

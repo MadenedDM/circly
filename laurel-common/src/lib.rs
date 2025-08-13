@@ -2,12 +2,7 @@
 
 pub mod lore;
 
-#[must_use]
-pub fn version() -> u32 {
-    env!("CARGO_PKG_VERSION_MAJOR")
-        .parse::<u32>()
-        .unwrap_or_default()
-}
+pub const VERSION: u8 = 1;
 
 pub mod color {
     use rkyv::{Archive, Deserialize, Serialize};
