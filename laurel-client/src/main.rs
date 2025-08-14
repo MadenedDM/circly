@@ -5,7 +5,9 @@ use std::{
     net::{Ipv4Addr, Shutdown, SocketAddr, SocketAddrV4, TcpStream},
 };
 
-use laurel_common::lore::{new_shake_buf, ShakeBuf, CLIENT, SERVER};
+use laurel_common::lore::{ShakeBuf, gen_client, is_valid_client, new_shake_buf};
+use log::{LevelFilter, error, info};
+use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 
 const PORT: u16 = 9878;
 
@@ -52,42 +54,39 @@ impl Client {
     /// Runs the client
     ///
     /// # Errors
-    /// Sometimes
+    /// If something goes wrong during the running of the client.
     pub fn run(&mut self) -> Result<(), io::Error> {
-        match self.stream.write_all(&CLIENT) {
-            Ok(()) => (),
-            Err(e) => {
-                return Err(e);
-            }
-        }
+        self.stream.write_all(&gen_client())?;
 
         let mut buf: ShakeBuf = new_shake_buf();
 
-        match self.stream.read_exact(&mut buf) {
-            Ok(()) => (),
-            Err(e) => {
-                return Err(e);
-            }
+        self.stream.read_exact(&mut buf)?;
+
+        if is_valid_client(buf) {
+            info!("Connected to a Server");
         }
 
-        if buf == SERVER {
-            println!("Connected to a Server");
-        }
-
-        let _ = self.stream.shutdown(Shutdown::Both);
+        self.stream.shutdown(Shutdown::Both)?;
 
         Ok(())
     }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+    CombinedLogger::init(vec![TermLogger::new(
+        LevelFilter::Debug,
+        Config::default(),
+        TerminalMode::Mixed,
+        ColorChoice::Auto,
+    )])?;
+
     let address: SocketAddr = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT));
 
     let mut client: Client = match Client::try_new(address) {
         Ok(c) => c,
         Err(e) => match e.kind() {
             ErrorKind::ConnectionRefused => {
-                println!("Connection Refused, Is the Server up?");
+                error!("Connection Refused, Is the Server up?");
                 return Ok(());
             }
             _ => {

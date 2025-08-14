@@ -59,4 +59,4 @@ nom = { version = "8.0" }
 # Provides async
 tokio = { version = "1.47", features = ["full"] }
 
-uuid = { version = "1.17", features = ["v4"] }
+uuid = { version = "1.18", features = ["v4"] }

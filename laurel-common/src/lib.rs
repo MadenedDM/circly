@@ -1,5 +1,6 @@
 #![allow(clippy::multiple_crate_versions)]
 
+pub mod client;
 pub mod lore;
 
 pub const VERSION: u8 = 1;

@@ -6,6 +6,8 @@ alias runs := server
 alias runc := client
 alias f := fmt
 alias b := build
+alias s := server
+alias c := client
 
 # Lints the code using clippy
 lint: fmt

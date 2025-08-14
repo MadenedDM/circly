@@ -8,7 +8,7 @@ use std::{
 };
 
 use hecs::World;
-use laurel_common::lore::{CLIENT, SERVER, new_shake_buf};
+use laurel_common::lore::{gen_server, is_valid_client, new_shake_buf};
 use log::{LevelFilter, error, info, warn};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use tokio::{
@@ -81,6 +81,7 @@ impl Server {
     /// # Panics
     /// Sometimes
     pub async fn run(&mut self) -> Errorable {
+        let server_id = gen_server();
         loop {
             match self.listener.accept().await {
                 Ok((mut socket, address)) => {
@@ -89,14 +90,12 @@ impl Server {
                     let reading = socket.read_exact(&mut handshake);
                     match reading.await {
                         Ok(_amount) => {
-                            if handshake == CLIENT {
+                            if is_valid_client(handshake) {
                                 info!("Accepted ......... {address}");
-                                match socket.write_all(&SERVER).await {
+                                match socket.write_all(&server_id).await {
                                     Ok(()) => (),
                                     Err(e) => {
-                                        error!(
-                                            "{e:?} Occured while confirming with client"
-                                        );
+                                        error!("{e:?} Occured while confirming with client");
                                         shutdown(&mut socket).await;
                                     }
                                 }

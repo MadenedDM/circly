@@ -10,36 +10,36 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-linux:
+  build-and-test:
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
 
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build common
+      run: cargo build --bin laurel-common --verbose
+    - name: Build server
+      run: cargo build --bin laurel-server --verbose
+    - name: Test common
+      run: cargo test --bin laurel-common --verbose
+    - name: Test server
+      run: cargo test --bin laurel-server --verbose
+  
+  audit:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --bin laurel-server --verbose
-    - name: Run Tests
-      run: cargo test --bin laurel-server --verbose
+      - uses: actions/checkout
+      - name: setup
+        run: cargo install --force --locked cargo-audit
+      - name: lockfile
+        run: cargo generate-lockfile
+      - name: audit
+        run: cargo audit
 
-  build-win:
-
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --bin laurel-server --verbose
-    - name: Run Tests
-      run: cargo test --bin laurel-server --verbose
-
-
-  build-mac:
-
-    runs-on: macos-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --bin laurel-server --verbose
-    - name: Run Tests
-      run: cargo test --bin laurel-server --verbose
+  # Will uncomment at v1.0.0
+  # semver:
+  #   runs-on: ubuntu-latest
