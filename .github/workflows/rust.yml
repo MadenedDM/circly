@@ -20,11 +20,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build common
-      run: cargo build --lib laurel-common --verbose
+      run: cargo build --lib --verbose
     - name: Build server
       run: cargo build --bin laurel-server --verbose
     - name: Test common
-      run: cargo test --lib laurel-common --verbose
+      run: cargo test --lib --verbose
     - name: Test server
       run: cargo test --bin laurel-server --verbose
   
