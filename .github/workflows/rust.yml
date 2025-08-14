@@ -19,8 +19,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build common
-      run: cargo build --bin laurel-common --verbose
     - name: Build server
       run: cargo build --bin laurel-server --verbose
     - name: Test common
