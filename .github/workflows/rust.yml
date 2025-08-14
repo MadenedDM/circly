@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Build common
       run: cargo build --lib --verbose
     - name: Build server
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: setup
         run: cargo install --force --locked cargo-audit
       - name: lockfile
