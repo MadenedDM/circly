@@ -5,8 +5,8 @@ use std::{
     net::{Ipv4Addr, Shutdown, SocketAddr, SocketAddrV4, TcpStream},
 };
 
-use laurel_common::lore::{ShakeBuf, gen_client, is_valid_client, new_shake_buf};
-use log::{LevelFilter, error, info};
+use laurel_common::lore::{ShakeBuf, gen_client, is_valid_server, new_shake_buf};
+use log::{LevelFilter, error, info, warn};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 
 const PORT: u16 = 9878;
@@ -56,18 +56,23 @@ impl Client {
     /// # Errors
     /// If something goes wrong during the running of the client.
     pub fn run(&mut self) -> Result<(), io::Error> {
+        info!("Client Started");
         self.stream.write_all(&gen_client())?;
 
         let mut buf: ShakeBuf = new_shake_buf();
 
         self.stream.read_exact(&mut buf)?;
 
-        if is_valid_client(buf) {
+        if is_valid_server(buf) {
             info!("Connected to a Server");
+        } else {
+            warn!("Server failed handshake");
+            self.stream.shutdown(Shutdown::Both)?;
+            return Ok(());
         }
-
+        
+        info!("Disconnecting");
         self.stream.shutdown(Shutdown::Both)?;
-
         Ok(())
     }
 }
