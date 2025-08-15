@@ -1,10 +1,10 @@
+use laurel_common::camphor::Request;
+use rkyv::{from_bytes, rancor::Error, to_bytes};
 use std::{
     io::{Read, Write},
     net::TcpStream,
 };
 
-use laurel_common::camphor::Request;
-use rkyv::{from_bytes, rancor::Error, to_bytes};
 
 /// Sends a request from a socket
 ///
