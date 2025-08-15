@@ -1,5 +1,5 @@
 [workspace]
-members = ["laurel-client", "laurel-common", "laurel-server"]
+members = ["laurel-client", "laurel-common", "laurel-server", "camphor", "camphor-tokio"]
 resolver = "3"
 
 [workspace.package]

@@ -21,5 +21,9 @@ simplelog.workspace = true
 bracket-terminal = "0.8.7"
 
 [dependencies.laurel-common]
-version = "0.1.0"
+version = "*"
 path = "../laurel-common"
+
+[dependencies.camphor]
+version = "*"
+path = "../camphor"

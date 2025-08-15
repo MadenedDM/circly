@@ -1,17 +1,21 @@
 [package]
-name = "laurel-common"
+name = "camphor"
 authors.workspace = true
 description.workspace = true
 repository.workspace = true
-version = "0.1.0" 
+version.workspace = true
 edition.workspace = true
 license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 readme.workspace = true
 
+[dependencies]
+rkyv = { workspace = true }
+
 [lints]
 workspace = true
 
-[dependencies]
-rkyv = { workspace = true }
+[dependencies.laurel-common]
+version = "*"
+path = "../laurel-common"

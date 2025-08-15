@@ -8,7 +8,7 @@ use std::{
 };
 
 use hecs::World;
-use laurel_common::lore::{gen_server, is_valid_client, new_shake_buf};
+use laurel_common::camphor::{gen_server, is_valid_client, new_shake_buf};
 use log::{LevelFilter, error, info, warn};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use tokio::{

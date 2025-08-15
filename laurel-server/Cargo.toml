@@ -26,6 +26,9 @@ simplelog.workspace = true
 # rand_pcg = "0.9.0"
 
 [dependencies.laurel-common]
-version = "0.1.0"
+version = "*"
 path = "../laurel-common"
-features = ["tokio"]
+
+[dependencies.camphor-tokio]
+version = "*"
+path = "../camphor-tokio"
