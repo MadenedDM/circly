@@ -12,6 +12,7 @@ readme = "README.md"
 
 [[bin]]
 name = "client"
+required-features = ["graphical"]
 
 [[bin]]
 name = "server"
@@ -28,6 +29,10 @@ lto = "thin"
 
 [profile.dev.package."*"]
 opt-level = 3
+
+[features]
+default = []
+graphical = ["dep:bracket-terminal"]
 
 [dependencies]
 # Provides an ECS toolset
@@ -55,8 +60,8 @@ tokio-stream = "0.1.17"
 prost = "0.14"
 tonic = "0.14"
 
-# Provides a fake terminal for rendering
-bracket-terminal = "0.8.7"
+# Provides a terminal for rendering
+bracket-terminal = { version = "0.8.7", optional = true }
 
 uuid = { version = "1.18", features = ["v4"] }
 
