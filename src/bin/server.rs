@@ -7,8 +7,8 @@ use std::{
     sync::{Arc, Mutex},
 };
 
+use common::camphor::{gen_server, is_valid_client, new_shake_buf};
 use hecs::World;
-use laurel_common::camphor::{gen_server, is_valid_client, new_shake_buf};
 use log::{LevelFilter, error, info, warn};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use tokio::{
@@ -20,16 +20,6 @@ use tokio::{
 const PORT: u16 = 9878;
 
 type Errorable = Result<(), Box<dyn Error>>;
-
-// #[derive(Clone, Copy, Debug)]
-// struct PlayerComponent {
-//     owner: u32,
-// }
-
-// struct Position {
-//     x: i32,
-//     y: i32,
-// }
 
 /// A server implementation
 pub struct Server {
@@ -158,7 +148,8 @@ pub async fn shutdown(socket: &mut TcpStream) {
     match socket.shutdown().await {
         Ok(()) => (),
         Err(e) => {
-            assert!((e.kind() == ErrorKind::NotConnected), "Error {e:?}"); // In case user is on MacOS, this might change in the future
+            // In case user is on MacOS, this might change in the future
+            assert!((e.kind() == ErrorKind::NotConnected), "Error {e:?}");
         }
     }
 }

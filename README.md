@@ -1,8 +1,7 @@
-# Laurel
+# Circly
 
-[![Rust](https://github.com/MadenedDM/laurel/actions/workflows/rust.yml/badge.svg)](https://github.com/MadenedDM/laurel/actions/workflows/rust.yml)
+[![Rust](https://github.com/MadenedDM/laurel/actions/workflows/rust.yml/badge.svg)](https://github.com/MadenedDM/circly/actions/workflows/rust.yml)
 ![Static Badge](https://img.shields.io/badge/License-MIT-fc0a9b)
-<!-- [![Coverage Status](https://coveralls.io/repos/github/MadenedDM/laurel/badge.svg?branch=master)](https://coveralls.io/github/MadenedDM/laurel?branch=master) -->
 
 This project is VERY WIP, don't expect it to run, work, be safe, or be user friendly (Like me!). 
 

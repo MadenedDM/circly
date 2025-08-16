@@ -1,9 +1,3 @@
-#![allow(clippy::multiple_crate_versions)]
-
-pub mod camphor;
-
-pub const VERSION: u8 = 1;
-
 pub mod color {
     use rkyv::{Archive, Deserialize, Serialize};
 

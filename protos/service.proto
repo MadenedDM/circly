@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package laurel;
+
+service Echo {
+    rpc Send (EchoRequest) returns (EchoResponse);
+}
+
+message EchoRequest {
+    string name = 1;
+}
+
+message EchoResponse {
+    string message = 1;
+}
