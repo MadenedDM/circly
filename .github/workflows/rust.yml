@@ -19,25 +19,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5
-    - name: Build common
+    - name: Build Common
       run: cargo build --lib --verbose
-    - name: Build server
-      run: cargo build --bin laurel-server --verbose
-    - name: Test common
+    - name: Build Server
+      run: cargo build --bin server --verbose
+    - name: Test Common
       run: cargo test --lib --verbose
-    - name: Test server
-      run: cargo test --bin laurel-server --verbose
+    - name: Test Server
+      run: cargo test --bin server --verbose
   
   audit:
     runs-on: ubuntu-latest
     
     steps:
       - uses: actions/checkout@v5
-      - name: setup
+      - name: Setup
         run: cargo install --force --locked cargo-audit
-      - name: lockfile
+      - name: Lockfile
         run: cargo generate-lockfile
-      - name: audit
+      - name: Audit
         run: cargo audit
 
   # Will uncomment at v1.0.0

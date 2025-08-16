@@ -27,11 +27,11 @@ fmt:
 
 # Runs the server
 server:
-    cargo run --bin laurel-server
+    cargo run --bin server
 
 # Runs the client
 client:
-    cargo run --bin laurel-client
+    cargo run --bin client
 
 # Builds for release
 build: fmt

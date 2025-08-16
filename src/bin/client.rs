@@ -5,8 +5,7 @@ use std::{
     net::{Ipv4Addr, Shutdown, SocketAddr, SocketAddrV4, TcpStream},
 };
 
-use camphor::request;
-use laurel_common::camphor::{Request, ShakeBuf, gen_client, is_valid_server, new_shake_buf};
+use common::camphor::{ShakeBuf, gen_client, is_valid_server, new_shake_buf};
 use log::{LevelFilter, error, info, warn};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 
@@ -56,7 +55,7 @@ impl Client {
     ///
     /// # Errors
     /// If something goes wrong during the running of the client.
-    /// 
+    ///
     /// # Panics
     /// Ideally never
     pub fn run(&mut self) -> Result<(), io::Error> {
@@ -75,7 +74,7 @@ impl Client {
             return Ok(());
         }
 
-        request(&Request::Echo(String::from("Hello!")), &mut self.stream).expect("Failed to message server");
+        // request(&Request::Echo(String::from("Hello!")), &mut self.stream).expect("Failed to message server");
 
         info!("Disconnecting");
         self.stream.shutdown(Shutdown::Both)?;

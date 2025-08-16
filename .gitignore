@@ -7,6 +7,4 @@ assets
 # assets in subpaths 
 !*/assets
 
-scrap-bin
-
-*.log
+log

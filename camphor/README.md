@@ -1,1 +1,0 @@
-Communication Library for Laurel

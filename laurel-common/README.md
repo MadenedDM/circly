@@ -1,1 +1,0 @@
-A library for shared functionality and features between server and client.
