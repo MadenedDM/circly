@@ -31,9 +31,10 @@ pub struct EchoService {}
 #[tonic::async_trait]
 impl Echo for EchoService {
     async fn send(&self, request: Request<EchoRequest>) -> Result<Response<EchoResponse>, Status> {
-        debug!("{request:?}");
+        let inner = request.get_ref();
+        debug!("{inner:?}");
         Ok(Response::new(EchoResponse {
-            message: request.get_ref().name.to_string(),
+            message: inner.name.to_string(),
         }))
     }
 }

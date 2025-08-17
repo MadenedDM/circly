@@ -2,7 +2,7 @@
 use std::error::Error;
 
 use common::api::{EchoRequest, echo_client::EchoClient};
-use log::{LevelFilter, info};
+use log::{LevelFilter, debug, info};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use tonic::{Request, transport::Channel};
 
@@ -31,7 +31,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         });
 
         let response = client.send(request).await?;
-        info!("{:?}", response);
+        debug!("{:?}", response.metadata());
+        info!("{:?}", response.get_ref());
     }
 
     {
@@ -40,7 +41,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         });
 
         let response = client.send(request).await?;
-        info!("{:?}", response);
+        debug!("{:?}", response.metadata());
+        info!("{:?}", response.get_ref());
     }
 
     info!("Ending Client");
