@@ -1,7 +1,7 @@
 #![allow(clippy::multiple_crate_versions)]
 use std::error::Error;
 
-use common::api::{EchoRequest, echo_client::EchoClient};
+use common::api::{talk_client::TalkClient, EchoRequest, GreetRequest};
 use log::{LevelFilter, debug, info};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use tonic::{Request, transport::Channel};
@@ -23,24 +23,24 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .connect()
         .await?;
 
-    let mut client = EchoClient::new(channel);
+    let mut client = TalkClient::new(channel);
 
     {
-        let request = Request::new(EchoRequest {
-            name: String::from("Hello!"),
+        let request = Request::new(GreetRequest {
+            name: String::from("Bob"),
         });
 
-        let response = client.send(request).await?;
+        let response = client.greet(request).await?;
         debug!("{:?}", response.metadata());
         info!("{:?}", response.get_ref());
     }
 
-    {
+    loop {
         let request = Request::new(EchoRequest {
-            name: String::from("Goodbye!"),
+            message: String::from("Goodbye!"),
         });
 
-        let response = client.send(request).await?;
+        let response = client.echo(request).await?;
         debug!("{:?}", response.metadata());
         info!("{:?}", response.get_ref());
     }
