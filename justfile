@@ -31,7 +31,7 @@ server:
 
 # Runs the client
 client:
-    cargo run --bin client
+    cargo run --bin client --features="graphical"
 
 # Builds for release
 build: fmt

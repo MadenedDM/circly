@@ -1,6 +1,6 @@
 [package]
 name = "circly"
-authors = ["Fae"]
+authors = ["Fae H."]
 description = "A rougelike based on a server client model implemented in rust."
 repository = "https://github.com/MadenedDM/circly"
 version = "0.1.0"
@@ -9,6 +9,7 @@ license = "MIT"
 keywords = ["Game"]
 categories = ["games"]
 readme = "README.md"
+
 
 [[bin]]
 name = "client"
@@ -20,6 +21,7 @@ name = "server"
 [lib]
 name = "common"
 
+
 [profile.release]
 strip = "debuginfo"
 lto = "thin"
@@ -30,9 +32,11 @@ lto = "thin"
 [profile.dev.package."*"]
 opt-level = 3
 
+
 [features]
 default = []
 graphical = ["dep:bracket-terminal"]
+
 
 [dependencies]
 # Provides an ECS toolset
@@ -57,6 +61,9 @@ rand_pcg = "0.9.0"
 # Provides async & networking
 tokio = { version = "1.47", features = ["full"] }
 tokio-stream = "0.1.17"
+
+# Tools for gRPC
+tonic-prost = "0.14"
 prost = "0.14"
 tonic = "0.14"
 
@@ -66,7 +73,8 @@ bracket-terminal = { version = "0.8.7", optional = true }
 uuid = { version = "1.18", features = ["v4"] }
 
 [build-dependencies]
-tonic-build = "0.14"
+tonic-prost-build = "0.14"
+
 
 [lints.rust]
 unsafe_code = "forbid"

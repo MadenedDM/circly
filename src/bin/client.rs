@@ -1,88 +1,15 @@
 #![allow(clippy::multiple_crate_versions)]
-use std::{
-    error::Error,
-    io::{self, ErrorKind, Read, Write},
-    net::{Ipv4Addr, Shutdown, SocketAddr, SocketAddrV4, TcpStream},
-};
+use std::error::Error;
 
-use common::camphor::{ShakeBuf, gen_client, is_valid_server, new_shake_buf};
-use log::{LevelFilter, error, info, warn};
+use common::api::{EchoRequest, echo_client::EchoClient};
+use log::{LevelFilter, info};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
+use tonic::{Request, transport::Channel};
 
 const PORT: u16 = 9878;
 
-pub struct Client {
-    pub addr: SocketAddr,
-    pub stream: TcpStream,
-}
-
-impl Client {
-    /// Constructs a new client or dies trying
-    ///
-    /// # Panics
-    /// Whenever `try_new` would error
-    #[must_use]
-    pub fn new(addr: SocketAddr) -> Self {
-        match Self::try_new(addr) {
-            Ok(dat) => dat,
-            Err(e) => match e.kind() {
-                ErrorKind::ConnectionRefused => {
-                    panic!("Connection Refused, Is the Server up?")
-                }
-                _ => {
-                    panic!("Connection Failed: {e:?}")
-                }
-            },
-        }
-    }
-
-    /// Tries to construct a new client
-    ///
-    /// # Errors
-    /// If the server cannot be connected to.
-    pub fn try_new(addr: SocketAddr) -> Result<Self, io::Error> {
-        let stream = match TcpStream::connect(addr) {
-            Ok(dat) => dat,
-            Err(e) => {
-                return Err(e);
-            }
-        };
-
-        Ok(Self { addr, stream })
-    }
-
-    /// Runs the client
-    ///
-    /// # Errors
-    /// If something goes wrong during the running of the client.
-    ///
-    /// # Panics
-    /// Ideally never
-    pub fn run(&mut self) -> Result<(), io::Error> {
-        info!("Client Started");
-        self.stream.write_all(&gen_client())?;
-
-        let mut buf: ShakeBuf = new_shake_buf();
-
-        self.stream.read_exact(&mut buf)?;
-
-        if is_valid_server(buf) {
-            info!("Connected to a Server");
-        } else {
-            warn!("Server failed handshake");
-            self.stream.shutdown(Shutdown::Both)?;
-            return Ok(());
-        }
-
-        // request(&Request::Echo(String::from("Hello!")), &mut self.stream).expect("Failed to message server");
-
-        info!("Disconnecting");
-        self.stream.shutdown(Shutdown::Both)?;
-        Ok(())
-    }
-}
-
-fn main() -> Result<(), Box<dyn Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     CombinedLogger::init(vec![TermLogger::new(
         LevelFilter::Debug,
         Config::default(),
@@ -90,22 +17,33 @@ fn main() -> Result<(), Box<dyn Error>> {
         ColorChoice::Auto,
     )])?;
 
-    let address: SocketAddr = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT));
+    info!("Starting Client");
 
-    let mut client: Client = match Client::try_new(address) {
-        Ok(c) => c,
-        Err(e) => match e.kind() {
-            ErrorKind::ConnectionRefused => {
-                error!("Connection Refused, Is the Server up?");
-                return Ok(());
-            }
-            _ => {
-                panic!("Connection Failed: {e:?}")
-            }
-        },
-    };
+    let channel: Channel = Channel::from_shared(format!("http://localhost:{}", PORT))?
+        .connect()
+        .await?;
 
-    client.run()?;
+    let mut client = EchoClient::new(channel);
+
+    {
+        let request = Request::new(EchoRequest {
+            name: String::from("Hello!"),
+        });
+
+        let response = client.send(request).await?;
+        info!("{:?}", response);
+    }
+
+    {
+        let request = Request::new(EchoRequest {
+            name: String::from("Goodbye!"),
+        });
+
+        let response = client.send(request).await?;
+        info!("{:?}", response);
+    }
+
+    info!("Ending Client");
 
     Ok(())
 }

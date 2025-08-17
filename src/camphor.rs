@@ -1,7 +1,5 @@
 pub use rkyv;
 
-use rkyv::{Archive, Deserialize, Serialize};
-
 pub type ShakeBuf = [u8; 16];
 
 pub const EOF: u8 = 0x03;
@@ -11,21 +9,6 @@ const SERVER: ShakeBuf = [0xA1; 16]; // ¡ in ascii
 #[must_use]
 pub const fn new_shake_buf() -> ShakeBuf {
     [0u8; 16]
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Archive)]
-#[rkyv(compare(PartialEq), derive(Debug))]
-#[non_exhaustive]
-pub enum Request {
-    Echo(String),
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Archive)]
-#[rkyv(compare(PartialEq), derive(Debug))]
-#[non_exhaustive]
-pub enum Response {
-    Fail,
-    Echo(String),
 }
 
 #[must_use]
