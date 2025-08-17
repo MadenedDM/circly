@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package laurel;
+package mainservice;
 
 service Echo {
     rpc Send (EchoRequest) returns (EchoResponse);

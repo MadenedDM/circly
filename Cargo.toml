@@ -61,6 +61,9 @@ rand_pcg = "0.9.0"
 # Provides async & networking
 tokio = { version = "1.47", features = ["full"] }
 tokio-stream = "0.1.17"
+
+# Tools for gRPC
+tonic-prost = "0.14"
 prost = "0.14"
 tonic = "0.14"
 
@@ -70,7 +73,7 @@ bracket-terminal = { version = "0.8.7", optional = true }
 uuid = { version = "1.18", features = ["v4"] }
 
 [build-dependencies]
-tonic-build = "0.14"
+tonic-prost-build = "0.14"
 
 
 [lints.rust]
