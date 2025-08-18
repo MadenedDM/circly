@@ -3,14 +3,13 @@ use std::{
     error::Error,
     fmt::Debug,
     net::{Ipv4Addr, SocketAddr, SocketAddrV4},
-    sync::{Arc, Mutex},
 };
 
 use common::api::{
-    talk_server::{Talk, TalkServer}, EchoRequest, EchoResponse, GreetRequest, GreetResponse
+    EchoRequest, EchoResponse, JoinRequest, JoinResponse, QuitRequest, QuitResponse,
+    main_server::{Main, MainServer},
 };
-use hecs::World;
-use log::{debug, info, LevelFilter};
+use log::{LevelFilter, debug, info};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 
 use tonic::{Request, Response, Status, transport::Server};
@@ -19,28 +18,30 @@ const PORT: u16 = 9878;
 
 type Errorable = Result<(), Box<dyn Error>>;
 
-/// A server implementation
-pub struct ServerData {
-    pub world: Arc<Mutex<World>>,
-}
-
-#[derive(Debug, Default)]
-pub struct TalkService {}
+#[derive(Debug)]
+pub struct Service {}
 
 #[tonic::async_trait]
-impl Talk for TalkService {
+impl Main for Service {
+    async fn join(&self, request: Request<JoinRequest>) -> Result<Response<JoinResponse>, Status> {
+        let inner = request.get_ref();
+        info!("{} Has Joined!", inner.name);
+        Ok(Response::new(JoinResponse { id: 1 }))
+    }
+
+    async fn quit(&self, request: Request<QuitRequest>) -> Result<Response<QuitResponse>, Status> {
+        let inner = request.get_ref();
+        info!("{} [{}] Is Quitting!", inner.name, inner.id);
+        Ok(Response::new(QuitResponse { exitcode: 0 }))
+    }
+
     async fn echo(&self, request: Request<EchoRequest>) -> Result<Response<EchoResponse>, Status> {
         let inner = request.get_ref();
+
         debug!("{inner:?}");
+
         Ok(Response::new(EchoResponse {
-            message: inner.message.to_string(),
-        }))
-    }
-    async fn greet(&self, request: Request<GreetRequest>) -> Result<Response<GreetResponse>, Status> {
-        let inner = request.get_ref();
-        debug!("{inner:?}");
-        Ok(Response::new(GreetResponse {
-            message: format!("Hello {}!", inner.name),
+            dat: inner.dat.clone(),
         }))
     }
 }
@@ -61,8 +62,10 @@ async fn main() -> Errorable {
 
     info!("Using address: {address}");
 
+    let service = Service {};
+
     Server::builder()
-        .add_service(TalkServer::new(TalkService::default()))
+        .add_service(MainServer::new(service))
         .serve(address)
         .await?;
 

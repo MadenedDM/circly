@@ -1,8 +1,8 @@
 #![allow(clippy::multiple_crate_versions)]
 use std::error::Error;
 
-use common::api::{talk_client::TalkClient, EchoRequest, GreetRequest};
-use log::{LevelFilter, debug, info};
+use common::api::{main_client::MainClient, EchoRequest, JoinRequest, QuitRequest};
+use log::{LevelFilter, info};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use tonic::{Request, transport::Channel};
 
@@ -23,27 +23,24 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .connect()
         .await?;
 
-    let mut client = TalkClient::new(channel);
+    let mut client = MainClient::new(channel);
 
-    {
-        let request = Request::new(GreetRequest {
-            name: String::from("Bob"),
-        });
+    let id = client
+        .join(Request::new(JoinRequest { name: "Bob".into() }))
+        .await?
+        .into_inner()
+        .id;
 
-        let response = client.greet(request).await?;
-        debug!("{:?}", response.metadata());
-        info!("{:?}", response.get_ref());
-    }
+    let d = client.echo(Request::new(EchoRequest {id, dat: "Hello!".into()})).await?;
 
-    loop {
-        let request = Request::new(EchoRequest {
-            message: String::from("Goodbye!"),
-        });
+    info!("{}", d.into_inner().dat);
 
-        let response = client.echo(request).await?;
-        debug!("{:?}", response.metadata());
-        info!("{:?}", response.get_ref());
-    }
+    client
+        .quit(Request::new(QuitRequest {
+            name: "Bob".into(),
+            id,
+        }))
+        .await?;
 
     info!("Ending Client");
 
