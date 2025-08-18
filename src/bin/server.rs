@@ -59,6 +59,8 @@ async fn main() -> Errorable {
 
     let address: SocketAddr = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT));
 
+    info!("Using address: {address}");
+
     Server::builder()
         .add_service(TalkServer::new(TalkService::default()))
         .serve(address)
