@@ -2,14 +2,24 @@ syntax = "proto3";
 
 package mainservice;
 
-service Echo {
-    rpc Send (EchoRequest) returns (EchoResponse);
+service Talk {
+    rpc Echo (EchoRequest) returns (EchoResponse);
+    rpc Greet (GreetRequest) returns (GreetResponse);
+}
+
+message GreetRequest {
+    string name = 1;
+}
+
+message GreetResponse {
+    string message = 1;
 }
 
 message EchoRequest {
-    string name = 1;
+    string message = 1;
 }
 
 message EchoResponse {
     string message = 1;
 }
+

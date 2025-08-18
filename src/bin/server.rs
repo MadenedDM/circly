@@ -7,8 +7,7 @@ use std::{
 };
 
 use common::api::{
-    EchoRequest, EchoResponse,
-    echo_server::{Echo, EchoServer},
+    talk_server::{Talk, TalkServer}, EchoRequest, EchoResponse, GreetRequest, GreetResponse
 };
 use hecs::World;
 use log::{debug, info, LevelFilter};
@@ -26,14 +25,22 @@ pub struct ServerData {
 }
 
 #[derive(Debug, Default)]
-pub struct EchoService {}
+pub struct TalkService {}
 
 #[tonic::async_trait]
-impl Echo for EchoService {
-    async fn send(&self, request: Request<EchoRequest>) -> Result<Response<EchoResponse>, Status> {
-        debug!("{request:?}");
+impl Talk for TalkService {
+    async fn echo(&self, request: Request<EchoRequest>) -> Result<Response<EchoResponse>, Status> {
+        let inner = request.get_ref();
+        debug!("{inner:?}");
         Ok(Response::new(EchoResponse {
-            message: request.get_ref().name.to_string(),
+            message: inner.message.to_string(),
+        }))
+    }
+    async fn greet(&self, request: Request<GreetRequest>) -> Result<Response<GreetResponse>, Status> {
+        let inner = request.get_ref();
+        debug!("{inner:?}");
+        Ok(Response::new(GreetResponse {
+            message: format!("Hello {}!", inner.name),
         }))
     }
 }
@@ -52,8 +59,10 @@ async fn main() -> Errorable {
 
     let address: SocketAddr = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), PORT));
 
+    info!("Using address: {address}");
+
     Server::builder()
-        .add_service(EchoServer::new(EchoService::default()))
+        .add_service(TalkServer::new(TalkService::default()))
         .serve(address)
         .await?;
 
