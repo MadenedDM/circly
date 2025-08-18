@@ -8,3 +8,6 @@ assets
 !*/assets
 
 log
+
+# Proto Files made by protogen.py
+out.proto
