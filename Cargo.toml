@@ -1,7 +1,7 @@
 [package]
 name = "circly"
 authors = ["Fae H."]
-description = "A rougelike based on a server client model implemented in rust."
+description = "A roguelike based on a server client model implemented in rust."
 repository = "https://github.com/MadenedDM/circly"
 version = "0.1.0"
 edition = "2024"
@@ -35,7 +35,9 @@ opt-level = 3
 
 [features]
 default = []
-graphical = ["dep:bracket-terminal"]
+dev = []
+graphical = ["dep:glow", "dep:glutin"]
+log = ["dep:log", "dep:simplelog"]
 
 
 [dependencies]
@@ -49,8 +51,8 @@ rkyv = { version = "0.8", features = [] }
 thiserror = { version = "2.0" }
 
 # Logging utils
-log = { version = "0.4" }
-simplelog = { version = "0.12" }
+log = { version = "0.4", optional = true }
+simplelog = { version = "0.12", optional = true }
 
 # Provides tools for parsing
 nom = { version = "8.0" }
@@ -67,8 +69,8 @@ tonic-prost = "0.14"
 prost = "0.14"
 tonic = "0.14"
 
-# Provides a terminal for rendering
-bracket-terminal = { version = "0.8.7", optional = true }
+# Provides tools for rendering
+glutin = { version = "*", optional = true }
 
 uuid = { version = "1.18", features = ["v4"] }
 

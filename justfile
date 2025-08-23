@@ -27,11 +27,11 @@ fmt:
 
 # Runs the server
 server:
-    cargo run --bin server
+    cargo run --bin server --features="log"
 
 # Runs the client
 client:
-    cargo run --bin client --features="graphical"
+    cargo run --bin client --features="graphical,log"
 
 # Builds for release
 build: fmt

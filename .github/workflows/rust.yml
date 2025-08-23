@@ -25,6 +25,8 @@ jobs:
       run: cargo build --lib --verbose
     - name: Build Server
       run: cargo build --bin server --verbose
+    - name: Build Client
+      run: cargo build --bin client --verbose --features="graphical"
     - name: Test Common
       run: cargo test --lib --verbose
     - name: Test Server

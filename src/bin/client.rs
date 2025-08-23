@@ -1,8 +1,10 @@
 #![allow(clippy::multiple_crate_versions)]
 use std::error::Error;
 
-use common::api::{main_client::MainClient, EchoRequest, JoinRequest, QuitRequest};
+use common::api::{EchoRequest, JoinRequest, QuitRequest, main_client::MainClient};
+#[cfg(feature = "log")]
 use log::{LevelFilter, info};
+#[cfg(feature = "log")]
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode};
 use tonic::{Request, transport::Channel};
 
@@ -10,6 +12,7 @@ const PORT: u16 = 9878;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    #[cfg(feature = "log")]
     CombinedLogger::init(vec![TermLogger::new(
         LevelFilter::Debug,
         Config::default(),
@@ -17,6 +20,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         ColorChoice::Auto,
     )])?;
 
+    #[cfg(feature = "log")]
     info!("Starting Client");
 
     let channel: Channel = Channel::from_shared(format!("http://localhost:{}", PORT))?
@@ -31,8 +35,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .into_inner()
         .id;
 
-    let d = client.echo(Request::new(EchoRequest {id, dat: "Hello!".into()})).await?;
+    let d = client
+        .echo(Request::new(EchoRequest {
+            id,
+            dat: "Hello!".into(),
+        }))
+        .await?;
 
+    #[cfg(feature = "log")]
     info!("{}", d.into_inner().dat);
 
     client
@@ -42,6 +52,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }))
         .await?;
 
+    #[cfg(feature = "log")]
     info!("Ending Client");
 
     Ok(())
